@@ -8,6 +8,8 @@ import com.vxl.tim_phong_tro.models.entities.AppUser;
 import com.vxl.tim_phong_tro.models.entities.UserInfo;
 import com.vxl.tim_phong_tro.models.entities.UserPost;
 import com.vxl.tim_phong_tro.models.entities.UserRole;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -25,7 +27,7 @@ public interface AppUserService {
     void setRoleToUser(String userEmail, Set<UserRole> roleSet);
     Boolean isEmailUsed(String email);
 
-    List<UserPost> getUserPosts(AppUser appUser);
+    Page<UserPost> getUserPosts(String appUserUid, Pageable paging);
 
     void saveUserAvatar(String uid, String imageUrl);
 }

@@ -3,10 +3,10 @@ package com.vxl.tim_phong_tro.controllers;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.vxl.tim_phong_tro.converters.AppUserConverter;
+import com.vxl.tim_phong_tro.converters.DtoConverter;
 import com.vxl.tim_phong_tro.models.dtos.UserInfoDto;
+import com.vxl.tim_phong_tro.models.dtos.UserPostDto;
 import com.vxl.tim_phong_tro.models.entities.AppUser;
-import com.vxl.tim_phong_tro.models.entities.UserInfo;
 import com.vxl.tim_phong_tro.models.entities.UserPost;
 import com.vxl.tim_phong_tro.models.entities.UserRole;
 import com.vxl.tim_phong_tro.services.AppUserService;
@@ -14,6 +14,9 @@ import com.vxl.tim_phong_tro.services.FirebaseFileService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,10 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -32,7 +32,7 @@ import java.util.Set;
 @Slf4j
 public class UserController {
     private final AppUserService appUserService;
-    private final AppUserConverter appUserConverter;
+    private final DtoConverter appUserConverter;
     private final FirebaseFileService firebaseFileService;
 
     @GetMapping("/user/info/{uid}")
@@ -65,9 +65,27 @@ public class UserController {
     }
 
     @GetMapping("/user/{uid}/posts")
-    public ResponseEntity<List<UserPost>> getUserPosts(@PathVariable String uid) {
-        AppUser appUser = appUserService.getUserByUid(uid);
-        return ResponseEntity.ok().body(appUserService.getUserPosts(appUser));
+    public ResponseEntity<Map<String, Object>> getUserPosts(@PathVariable String uid,
+                                                            @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "3") int size) {
+        try {
+            Page<UserPost> pagePosts = appUserService.getUserPosts(uid, PageRequest.of(page,size));
+            List<UserPost> posts = pagePosts.getContent();
+            List<UserPostDto> postDtos = new ArrayList<>();
+            for (UserPost post:posts
+                 ) {
+                postDtos.add(appUserConverter.userPostEntityToDto(post));
+            }
+            Map<String, Object> response = new HashMap<>();
+            response.put("posts", postDtos);
+            response.put("currentPage", pagePosts.getNumber());
+            response.put("totalItems", pagePosts.getTotalElements());
+            response.put("totalPages", pagePosts.getTotalPages());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/user/info/save/{uid}")

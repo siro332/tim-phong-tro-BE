@@ -19,4 +19,5 @@ public class UserDto {
     private String email;
     private Boolean emailVerified;
     private Set<UserRoleDto> userRoles;
+    private UserInfoDto userInfo;
 }

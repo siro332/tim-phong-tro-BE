@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,7 +20,9 @@ public class UserPost {
     private String name;
     private String description;
     private String phoneNumber;
+    private String thumbnailImage;
     private Date postingDate;
+    private Boolean isVerified;
     @OneToOne
     @JoinColumn(name = "room_info_id")
     private RoomInfo roomInfo;

@@ -3,7 +3,6 @@ package com.vxl.tim_phong_tro.services.impl;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.vxl.tim_phong_tro.models.dtos.AuthToken;
 import com.vxl.tim_phong_tro.models.dtos.UserInfoDto;
 import com.vxl.tim_phong_tro.models.entities.AppUser;
 import com.vxl.tim_phong_tro.models.entities.UserInfo;
@@ -16,6 +15,9 @@ import com.vxl.tim_phong_tro.repo.UserRoleRepo;
 import com.vxl.tim_phong_tro.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -96,8 +98,10 @@ public class IAppUserService implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public List<UserPost> getUserPosts(AppUser appUser) {
-        return userPostRepo.findByAppUser(appUser);
+    public Page<UserPost> getUserPosts(String appUserUid,Pageable paging) {
+        Page<UserPost> pagePosts;
+        pagePosts = userPostRepo.findByAppUser_Uid(appUserUid, paging);
+        return pagePosts;
     }
 
     @Override
@@ -110,31 +114,31 @@ public class IAppUserService implements AppUserService, UserDetailsService {
 
     @Override
     public void registerUser(FirebaseToken decodedToken) throws ExecutionException, InterruptedException, FirebaseAuthException {
-            Set<UserRole> roles = new HashSet<>();
-            roles.add(userRoleRepo.findByName("ROLE_USER"));
-            Map<String, Object> claims = new HashMap<>();
-            claims.put("role", "ROLE_USER");
-            try {
-                FirebaseAuth.getInstance().setCustomUserClaims(decodedToken.getUid(), claims);
-                AppUser newUser =
-                        AppUser.builder().uid(decodedToken.getUid())
-                                .email(decodedToken.getEmail())
-                                .emailVerified(decodedToken.isEmailVerified())
-                                .userRoles(roles)
-                                .build();
-                appUserRepo.save(newUser);
-                UserInfo newUserInfo =
-                        UserInfo.builder()
-                                .user(appUserRepo.findByUid(newUser.getUid()))
-                                .firstName(decodedToken.getName() != null ? decodedToken.getName() : "")
-                                .lastName("")
-                                .phoneNumber("")
-                                .description("")
-                                .image(decodedToken.getPicture() != null ? decodedToken.getPicture() : "").build();
-                userInfoRepo.save(newUserInfo);
-            } catch (FirebaseAuthException e) {
-                e.printStackTrace();
-            }
+        Set<UserRole> roles = new HashSet<>();
+        roles.add(userRoleRepo.findByName("ROLE_USER"));
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", "ROLE_USER");
+        try {
+            FirebaseAuth.getInstance().setCustomUserClaims(decodedToken.getUid(), claims);
+            AppUser newUser =
+                    AppUser.builder().uid(decodedToken.getUid())
+                            .email(decodedToken.getEmail())
+                            .emailVerified(decodedToken.isEmailVerified())
+                            .userRoles(roles)
+                            .build();
+            appUserRepo.save(newUser);
+            UserInfo newUserInfo =
+                    UserInfo.builder()
+                            .user(appUserRepo.findByUid(newUser.getUid()))
+                            .firstName(decodedToken.getName() != null ? decodedToken.getName() : "")
+                            .lastName("")
+                            .phoneNumber("")
+                            .description("")
+                            .image(decodedToken.getPicture() != null ? decodedToken.getPicture() : "").build();
+            userInfoRepo.save(newUserInfo);
+        } catch (FirebaseAuthException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

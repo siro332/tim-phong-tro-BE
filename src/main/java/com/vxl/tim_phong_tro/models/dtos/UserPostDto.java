@@ -22,7 +22,8 @@ public class UserPostDto {
     private String name;
     private String description;
     private String phoneNumber;
-//    private Date postingDate;
-//    private RoomInfoDto roomInfo;
+    private Boolean isVerified;
+    private Date postingDate;
+    private RoomInfoDto roomInfo;
     private UserDto user;
 }
