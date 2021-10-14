@@ -1,22 +1,22 @@
-package com.vxl.tim_phong_tro.models.entities;
+package com.vxl.tim_phong_tro.models.dtos;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.vxl.tim_phong_tro.models.entities.AppUser;
+import com.vxl.tim_phong_tro.models.entities.RoomInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.util.Date;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserPost {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class PostDto {
     private Long id;
     private String name;
     private String description;
@@ -24,11 +24,6 @@ public class UserPost {
     private String thumbnailImage;
     private Date postingDate;
     private Boolean isVerified;
-    @OneToOne
-    @JoinColumn(name = "room_info_id")
-    private RoomInfo roomInfo;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private AppUser appUser;
-
+    private RoomInfoDto roomInfo;
+    private UserPostDto appUser;
 }

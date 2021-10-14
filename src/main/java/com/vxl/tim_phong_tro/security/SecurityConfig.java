@@ -41,11 +41,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/api/auth/**","/api/token/refresh/**","/api/profile_pic/upload").permitAll();
+        http.authorizeRequests().antMatchers("/api/auth/**","/api/token/refresh/**","/api/profile_pic/upload","/api/posts","/api/posts/search").permitAll();
         http.authorizeRequests().antMatchers("/api/user/**").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilterBefore(new FirebaseAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.cors().and().csrf().disable()
+//                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
+//        http.sessionManagement().sessionCreationPolicy(STATELESS);
+//        http.authorizeRequests().antMatchers("/api/auth/**","/api/token/refresh/**","/api/profile_pic/upload","/api/user/**","/api/posts/**").permitAll();
+//        //http.authorizeRequests().antMatchers("/api/user/**").hasAnyAuthority("ROLE_USER");
+//        http.authorizeRequests().anyRequest().authenticated();
+//        http.addFilterBefore(new FirebaseAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource(){

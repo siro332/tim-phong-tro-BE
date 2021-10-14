@@ -27,7 +27,5 @@ public interface AppUserService {
     void setRoleToUser(String userEmail, Set<UserRole> roleSet);
     Boolean isEmailUsed(String email);
 
-    Page<UserPost> getUserPosts(String appUserUid, Pageable paging);
-
     void saveUserAvatar(String uid, String imageUrl);
 }

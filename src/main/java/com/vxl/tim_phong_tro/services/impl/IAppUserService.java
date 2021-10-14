@@ -37,7 +37,6 @@ public class IAppUserService implements AppUserService, UserDetailsService {
     private final AppUserRepo appUserRepo;
     private final UserRoleRepo userRoleRepo;
     private final UserInfoRepo userInfoRepo;
-    private final UserPostRepo userPostRepo;
 
     @Override
     public AppUser getUserByUid(String uid) {
@@ -98,13 +97,6 @@ public class IAppUserService implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public Page<UserPost> getUserPosts(String appUserUid,Pageable paging) {
-        Page<UserPost> pagePosts;
-        pagePosts = userPostRepo.findByAppUser_Uid(appUserUid, paging);
-        return pagePosts;
-    }
-
-    @Override
     public void saveUserAvatar(String uid, String imageUrl) {
         AppUser user = getUserByUid(uid);
         UserInfo userInfo = userInfoRepo.findByUserId(user.getId());
@@ -113,7 +105,7 @@ public class IAppUserService implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public void registerUser(FirebaseToken decodedToken) throws ExecutionException, InterruptedException, FirebaseAuthException {
+    public void registerUser(FirebaseToken decodedToken) {
         Set<UserRole> roles = new HashSet<>();
         roles.add(userRoleRepo.findByName("ROLE_USER"));
         Map<String, Object> claims = new HashMap<>();

@@ -31,7 +31,7 @@ public class ApplicationConfig {
     @Bean
     public void firebaseInit() throws IOException {
         String servicesAccountJsonBase64 = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
-        byte[] base64Decoded = DatatypeConverter.parseBase64Binary(servicesAccountJsonBase64);;
+        byte[] base64Decoded = DatatypeConverter.parseBase64Binary(servicesAccountJsonBase64);
         String decodedJsonString = new String(base64Decoded, StandardCharsets.UTF_8);
         log.info(decodedJsonString);
         InputStream serviceAccount = new ByteArrayInputStream(decodedJsonString.getBytes(StandardCharsets.UTF_8));
@@ -41,7 +41,14 @@ public class ApplicationConfig {
                 .build();
 
         FirebaseApp.initializeApp(options);
-
-        log.info("OK");
+//        FileInputStream inputStream = new FileInputStream("src/main/resources/firebase.json");
+//        FirebaseOptions options = new FirebaseOptions.Builder()
+//                .setCredentials(GoogleCredentials.fromStream(inputStream))
+//                .setStorageBucket("gold-fiber-311516.appspot.com")
+//                .build();
+//
+//        FirebaseApp.initializeApp(options);
+//
+//        log.info("OK");
     }
 }

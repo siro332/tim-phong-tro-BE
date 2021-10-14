@@ -17,5 +17,6 @@ public class WardDto {
     private Long id;
     private String name;
     private String image;
+    private Integer code;
     private DistrictDto district;
 }

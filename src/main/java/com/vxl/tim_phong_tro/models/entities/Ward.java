@@ -20,6 +20,10 @@ public class Ward {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private Integer code;
+    private String codename;
+    private String divisionType;
+    private String shortCodename;
     private String image;
     @ManyToOne
     @JoinColumn(name = "district_id")

@@ -1,5 +1,7 @@
 package com.vxl.tim_phong_tro.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +25,8 @@ public class AppUser {
     private Boolean emailVerified;
     @ManyToMany
     private Set<UserRole> userRoles;
-    @OneToOne(mappedBy = "user")
-    @PrimaryKeyJoinColumn
-    @JsonManagedReference
-    private UserInfo userInfo;
+
+//    @OneToOne(mappedBy = "user")
+//    @PrimaryKeyJoinColumn
+//    private UserInfo userInfo;
 }

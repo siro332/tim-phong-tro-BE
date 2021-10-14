@@ -1,27 +1,30 @@
 package com.vxl.tim_phong_tro.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.io.Serializable;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class City {
+public class SavedPost{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    private Integer code;
-    private String codename;
-    private String divisionType;
-    private Integer phoneCode;
-    private String image;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    AppUser appUser;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    UserPost post;
+
+    boolean isSaved;
 }
+

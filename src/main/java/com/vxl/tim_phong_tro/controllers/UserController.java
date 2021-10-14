@@ -5,18 +5,13 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.vxl.tim_phong_tro.converters.DtoConverter;
 import com.vxl.tim_phong_tro.models.dtos.UserInfoDto;
-import com.vxl.tim_phong_tro.models.dtos.UserPostDto;
 import com.vxl.tim_phong_tro.models.entities.AppUser;
-import com.vxl.tim_phong_tro.models.entities.UserPost;
 import com.vxl.tim_phong_tro.models.entities.UserRole;
 import com.vxl.tim_phong_tro.services.AppUserService;
 import com.vxl.tim_phong_tro.services.FirebaseFileService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,12 +27,12 @@ import java.util.*;
 @Slf4j
 public class UserController {
     private final AppUserService appUserService;
-    private final DtoConverter appUserConverter;
+    private final DtoConverter dtoConverter;
     private final FirebaseFileService firebaseFileService;
 
     @GetMapping("/user/info/{uid}")
     public ResponseEntity<UserInfoDto> getUser(@PathVariable String uid) {
-        return ResponseEntity.ok().body(appUserConverter.userInfoEntityToDto(appUserService.getUserInfoByUid(uid)));
+        return ResponseEntity.ok().body(dtoConverter.userInfoEntityToDto(appUserService.getUserInfoByUid(uid)));
     }
 
     @PostMapping("/user/save")
@@ -64,31 +59,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/user/{uid}/posts")
-    public ResponseEntity<Map<String, Object>> getUserPosts(@PathVariable String uid,
-                                                            @RequestParam(defaultValue = "0") int page,
-                                                            @RequestParam(defaultValue = "3") int size) {
-        try {
-            Page<UserPost> pagePosts = appUserService.getUserPosts(uid, PageRequest.of(page,size));
-            List<UserPost> posts = pagePosts.getContent();
-            List<UserPostDto> postDtos = new ArrayList<>();
-            for (UserPost post:posts
-                 ) {
-                postDtos.add(appUserConverter.userPostEntityToDto(post));
-            }
-            Map<String, Object> response = new HashMap<>();
-            response.put("posts", postDtos);
-            response.put("currentPage", pagePosts.getNumber());
-            response.put("totalItems", pagePosts.getTotalElements());
-            response.put("totalPages", pagePosts.getTotalPages());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping("/user/info/save/{uid}")
+    @PutMapping("/user/info/save/{uid}")
     public ResponseEntity<?> saveUserInfo(@PathVariable String uid, @RequestHeader("Authorization") String authToken, @RequestBody UserInfoDto userInfoDto) throws FirebaseAuthException {
         String tokenString = authToken.substring("Bearer ".length());
         FirebaseToken token = FirebaseAuth.getInstance().verifyIdToken(tokenString);
@@ -98,12 +69,12 @@ public class UserController {
                 return ResponseEntity.ok().body("Saved to database");
             } else throw new Exception();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error saving to database");
+            return ResponseEntity.badRequest().body("Error saving to database: " + e.toString());
         }
     }
 
     @PostMapping("/user/info/save/{uid}/profile_pic")
-    public ResponseEntity<?> upload(@PathVariable String uid, @RequestHeader("Authorization") String authToken, @RequestParam("file") MultipartFile multipartFile) throws IOException, FirebaseAuthException {
+    public ResponseEntity<?> upload(@PathVariable String uid, @RequestHeader("Authorization") String authToken, @RequestParam("file") MultipartFile multipartFile) throws FirebaseAuthException {
         log.info("HIT -/upload | File Name : {}", multipartFile.getOriginalFilename());
         String tokenString = authToken.substring("Bearer ".length());
         FirebaseToken token = FirebaseAuth.getInstance().verifyIdToken(tokenString);
@@ -113,7 +84,7 @@ public class UserController {
                 String imageUrl = firebaseFileService.getImageUrl(fileName);
                 appUserService.saveUserAvatar(uid, imageUrl);
                 return ResponseEntity.ok().body(imageUrl);
-            } else throw new Exception();
+            } else throw new Exception("UID not match!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.toString());
         }

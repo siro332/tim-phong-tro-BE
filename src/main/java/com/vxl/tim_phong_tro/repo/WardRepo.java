@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WardRepo extends JpaRepository<Ward,Long> {
+    Ward findByCode(Integer code);
 }

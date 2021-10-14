@@ -11,7 +11,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserPostDto {
-    private String email;
-    private String uid;
+public class RoomInfoPreviewDto {
+    private Integer gender;
+    private Double area;
+    private Long rentalPrice;
+    private StreetAddressDto address;
+    private Set<RoomUtilDto> roomUtils;
+    private RoomTypeDto roomType;
 }

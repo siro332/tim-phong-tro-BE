@@ -27,12 +27,12 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@RequestBody AuthToken request) throws FirebaseAuthException, ExecutionException, InterruptedException {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdTokenAsync(request.getToken()).get();
         if (appUserService.getUserByUid(decodedToken.getUid()) == null) {
-            try{
+            try {
                 appUserService.registerUser(decodedToken);
                 return ResponseEntity.ok().body("Created user with uid: " + decodedToken.getUid());
 
-            }catch (Exception e){
-                return ResponseEntity.badRequest().body("Error: " + e.toString());
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("Error: " + e);
 
             }
         }
