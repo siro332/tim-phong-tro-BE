@@ -5,11 +5,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.vxl.tim_phong_tro.converters.DtoConverter;
+import com.vxl.tim_phong_tro.models.dtos.PostDto;
 import com.vxl.tim_phong_tro.models.dtos.PostForm;
 import com.vxl.tim_phong_tro.models.dtos.PostPreviewDto;
+import com.vxl.tim_phong_tro.models.dtos.UserPostDto;
 import com.vxl.tim_phong_tro.models.entities.SavedPost;
+import com.vxl.tim_phong_tro.models.entities.UserInfo;
 import com.vxl.tim_phong_tro.models.entities.UserPost;
 import com.vxl.tim_phong_tro.models.entities.Ward;
+import com.vxl.tim_phong_tro.services.AppUserService;
 import com.vxl.tim_phong_tro.services.FirebaseFileService;
 import com.vxl.tim_phong_tro.services.PostService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,7 @@ public class PostController {
     private final PostService postService;
     private final DtoConverter dtoConverter;
     private final FirebaseFileService firebaseFileService;
+    private final AppUserService appUserService;
 
     @GetMapping("/posts")
     public ResponseEntity<Map<String, Object>> getAllPosts(@RequestParam(defaultValue = "0") int page,
@@ -151,7 +156,10 @@ public class PostController {
         try {
             Optional<UserPost> postOptional = postService.getPost(id);
             if (postOptional.isPresent()) {
-                return ResponseEntity.ok().body(dtoConverter.userPostEntityToPostDto(postOptional.get()));
+                UserInfo info = appUserService.getUserInfoByUid(postOptional.get().getAppUser().getUid());
+                PostDto postDto = dtoConverter.userPostEntityToPostDto(postOptional.get());
+                postDto.getAppUser().setUserInfo(dtoConverter.userInfoEntityToDto(info));
+                return ResponseEntity.ok().body(postDto);
             } else {
                 return ResponseEntity.badRequest().body("Post with id: " + id + " not found!");
             }

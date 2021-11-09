@@ -14,4 +14,5 @@ import java.util.Set;
 public class UserPostDto {
     private String email;
     private String uid;
+    private UserInfoDto userInfo;
 }
