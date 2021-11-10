@@ -77,7 +77,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/posts/search")
+    @PostMapping("/posts/search")
     public ResponseEntity<Map<String, Object>> getPostsContains(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
