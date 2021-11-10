@@ -14,7 +14,7 @@ public interface PostService {
     Page<UserPost> getUserPosts(String appUserUid, Pageable paging);
     UserPost createPost(String uid,PostForm form);
     Page<UserPost> getAllPosts(Pageable paging);
-    Page<UserPost> getPostContains(String searchString, Pageable pageable, Specification<UserPost> spec);
+    Page<UserPost> getPostContains(Pageable pageable, Specification<UserPost> spec);
     Page<UserPost> getUserSavedPost(String uid, Pageable pageable);
     Optional<UserPost> getPost(Long id);
     void addCity(Long id, Iterable<Ward> city);

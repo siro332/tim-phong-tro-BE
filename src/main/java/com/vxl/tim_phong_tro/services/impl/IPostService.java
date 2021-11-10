@@ -66,7 +66,7 @@ public class IPostService implements PostService {
     }
 
     @Override
-    public Page<UserPost> getPostContains(String searchString, Pageable pageable, Specification<UserPost> spec) {
+    public Page<UserPost> getPostContains(Pageable pageable, Specification<UserPost> spec) {
         Page<UserPost> pagePosts;
 //        pagePosts = userPostRepo.findUserPostContains(searchString.toLowerCase(), pageable,spec);
         pagePosts = userPostRepo.findAll(spec,pageable);

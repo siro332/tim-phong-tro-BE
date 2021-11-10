@@ -20,6 +20,7 @@ import com.vxl.tim_phong_tro.models.specifications.UserPost.UserPostSpecificatio
 import com.vxl.tim_phong_tro.services.AppUserService;
 import com.vxl.tim_phong_tro.services.FirebaseFileService;
 import com.vxl.tim_phong_tro.services.PostService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -75,28 +76,31 @@ public class PostController {
     }
 
     @GetMapping("/posts/search")
-    public ResponseEntity<Map<String, Object>> getPostsContains(@RequestParam("search") String searchString,
+    public ResponseEntity<Map<String, Object>> getPostsContains(
                                                                 @RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "3") int size,
                                                                 @RequestParam(defaultValue = "0") int sortDirection,
                                                                 @RequestParam(defaultValue = "postingDate") String sortParam,
-                                                                @RequestParam(value = "filters", required = false) String filters) {
+                                                                @RequestBody List<Filter> searchCriteriaList) {
         try {
             UserPostSpecificationsBuilder builder = new UserPostSpecificationsBuilder();
-            String operationSetExper = Joiner.on("|")
-                    .join(SearchOperation.SIMPLE_OPERATION_SET);
-            Pattern pattern = Pattern.compile("(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
-            Matcher matcher = pattern.matcher(filters + ",");
-            while (matcher.find()) {
-                builder.with(matcher.group(1), matcher.group(2), matcher.group(4), matcher.group(3), matcher.group(5));
+            for (Filter criteria: searchCriteriaList
+                 ) {
+            if(criteria.value.toString().contains("*")){
+                builder.with(criteria.key, criteria.operation, criteria.value.toString().replaceAll("\\*",""), criteria.value.toString(), criteria.value.toString());
+
+            }else{
+                builder.with(criteria.key, criteria.operation, criteria.value, criteria.value.toString(), criteria.value.toString());
+
             }
+                }
 
             Specification<UserPost> spec = builder.build();
             Page<UserPost> pagePosts;
             if (sortDirection == 0) {
-                pagePosts = postService.getPostContains(searchString, PageRequest.of(page, size, Sort.by(sortParam)),spec);
+                pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(sortParam)),spec);
             } else {
-                pagePosts = postService.getPostContains(searchString, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)),spec);
+                pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)),spec);
             }
             List<UserPost> posts = pagePosts.getContent();
             List<PostPreviewDto> postDtos = new ArrayList<>();
@@ -239,4 +243,10 @@ public class PostController {
             return ResponseEntity.badRequest().body("Error");
         }
     }
+}
+@Data
+class Filter{
+    String key;
+    String operation;
+    Object value;
 }
