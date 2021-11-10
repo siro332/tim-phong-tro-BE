@@ -115,6 +115,7 @@ public class PostController {
             response.put("totalPages", pagePosts.getTotalPages());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+            log.info(e.toString());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
