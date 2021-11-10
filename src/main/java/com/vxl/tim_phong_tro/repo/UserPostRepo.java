@@ -14,11 +14,11 @@ import org.springframework.stereotype.Repository;
 public interface UserPostRepo extends JpaRepository<UserPost,Long>, JpaSpecificationExecutor<UserPost> {
     Page<UserPost> findAll(Pageable pageable);
     Page<UserPost> findByAppUser_UidOrderByPostingDateDesc(String uid,Pageable pageable);
-    @Query("select p from UserPost p where lower(p.name) like %:searchString% or " +
-            "lower(p.roomInfo.address.streetName) like %:searchString% or " +
-            "lower(p.roomInfo.address.houseNumber) like %:searchString% or " +
-            "lower(p.roomInfo.address.ward.name) like %:searchString% or " +
-            "lower(p.roomInfo.address.ward.district.name) like %:searchString% or " +
-            "lower(p.roomInfo.address.ward.district.city.name) like %:searchString%")
-    Page<UserPost> findUserPostContains(String searchString, Pageable pageable, Specification<UserPost> spec);
+//    @Query("select p from UserPost p where lower(p.name) like %:searchString% or " +
+//            "lower(p.roomInfo.address.streetName) like %:searchString% or " +
+//            "lower(p.roomInfo.address.houseNumber) like %:searchString% or " +
+//            "lower(p.roomInfo.address.ward.name) like %:searchString% or " +
+//            "lower(p.roomInfo.address.ward.district.name) like %:searchString% or " +
+//            "lower(p.roomInfo.address.ward.district.city.name) like %:searchString%")
+//    Page<UserPost> findUserPostContains(String searchString, Pageable pageable, Specification<UserPost> spec);
 }
