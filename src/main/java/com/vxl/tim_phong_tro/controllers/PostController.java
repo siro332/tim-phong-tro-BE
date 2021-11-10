@@ -36,6 +36,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.vxl.tim_phong_tro.models.specifications.SearchOperation.OR_PREDICATE_FLAG;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -77,30 +79,35 @@ public class PostController {
 
     @GetMapping("/posts/search")
     public ResponseEntity<Map<String, Object>> getPostsContains(
-                                                                @RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "3") int size,
-                                                                @RequestParam(defaultValue = "0") int sortDirection,
-                                                                @RequestParam(defaultValue = "postingDate") String sortParam,
-                                                                @RequestBody List<Filter> searchCriteriaList) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "0") int sortDirection,
+            @RequestParam(defaultValue = "postingDate") String sortParam,
+            @RequestBody List<Filter> searchCriteriaList) {
         try {
             UserPostSpecificationsBuilder builder = new UserPostSpecificationsBuilder();
-            for (Filter criteria: searchCriteriaList
-                 ) {
-            if(criteria.value.toString().contains("*")){
-                builder.with(criteria.key, criteria.operation, criteria.value.toString().replaceAll("\\*",""), criteria.value.toString(), criteria.value.toString());
-
-            }else{
-                builder.with(criteria.key, criteria.operation, criteria.value, criteria.value.toString(), criteria.value.toString());
-
-            }
+            for (Filter criteria : searchCriteriaList) {
+                if (criteria.orPredicate != null && criteria.orPredicate.equals(OR_PREDICATE_FLAG)) {
+                    if (criteria.value.toString().contains("*")) {
+                        builder.with(criteria.orPredicate, criteria.key, criteria.operation, criteria.value.toString().replaceAll("\\*", ""), criteria.value.toString(), criteria.value.toString());
+                    } else {
+                        builder.with(criteria.orPredicate, criteria.key, criteria.operation, criteria.value, criteria.value.toString(), criteria.value.toString());
+                    }
+                } else {
+                    if (criteria.value.toString().contains("*")) {
+                        builder.with(criteria.key, criteria.operation, criteria.value.toString().replaceAll("\\*", ""), criteria.value.toString(), criteria.value.toString());
+                    } else {
+                        builder.with(criteria.key, criteria.operation, criteria.value, criteria.value.toString(), criteria.value.toString());
+                    }
                 }
+            }
 
             Specification<UserPost> spec = builder.build();
             Page<UserPost> pagePosts;
             if (sortDirection == 0) {
-                pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(sortParam)),spec);
+                pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(sortParam)), spec);
             } else {
-                pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)),spec);
+                pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)), spec);
             }
             List<UserPost> posts = pagePosts.getContent();
             List<PostPreviewDto> postDtos = new ArrayList<>();
@@ -245,8 +252,10 @@ public class PostController {
         }
     }
 }
+
 @Data
-class Filter{
+class Filter {
+    String orPredicate;
     String key;
     String operation;
     Object value;
