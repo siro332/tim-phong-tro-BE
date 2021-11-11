@@ -49,6 +49,15 @@ public class UserPostSpecification implements Specification<UserPost> {
                case 5:
                    path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]);
                    break;
+               case 6:
+                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]).get(paths[4]);
+                   break;
+               case 7:
+                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]).get(paths[5]).get(paths[6]);
+                   break;
+               case 8:
+                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]).get(paths[5]).get(paths[6]).get(paths[7]);
+                   break;
            }
         } else{
             path = root.get(criteria.getKey());
