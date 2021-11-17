@@ -1,7 +1,5 @@
 package com.vxl.tim_phong_tro.security;
 
-import com.vxl.tim_phong_tro.filters.CustomAuthenticationFilter;
-import com.vxl.tim_phong_tro.filters.CustomAuthorizationFilter;
 import com.vxl.tim_phong_tro.filters.FirebaseAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

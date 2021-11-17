@@ -1,9 +1,5 @@
 package com.vxl.tim_phong_tro.models.specifications;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
 
 public class SearchCriteria {
     private String key;
@@ -11,7 +7,6 @@ public class SearchCriteria {
     private Object value;
     private boolean orPredicate;
     public SearchCriteria() {
-
     }
 
     public SearchCriteria(final String key, final SearchOperation operation, final Object value) {

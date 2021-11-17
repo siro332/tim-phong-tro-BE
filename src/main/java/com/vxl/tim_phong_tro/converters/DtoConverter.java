@@ -2,7 +2,6 @@ package com.vxl.tim_phong_tro.converters;
 
 import com.vxl.tim_phong_tro.models.dtos.*;
 import com.vxl.tim_phong_tro.models.entities.*;
-import com.vxl.tim_phong_tro.repo.AppUserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DtoConverter {
     private final ModelMapper modelMapper;
-    private final AppUserRepo appUserRepo;
 
     public AppUser requestToModel(AuthToken signupRequest){
         return modelMapper.map(signupRequest,AppUser.class);
@@ -26,10 +24,6 @@ public class DtoConverter {
         return modelMapper.map(post,PostDto.class);
     }
 
-//    public UserInfo userInfoDtoToEntity(UserInfoDto userInfoDto){
-//        UserInfo userInfo = modelMapper.map(userInfoDto,UserInfo.class);
-//        userInfo.setId();
-//    }
     public UserInfoDto userInfoEntityToDto(UserInfo userInfo){
         return modelMapper.map(userInfo,UserInfoDto.class);
     }

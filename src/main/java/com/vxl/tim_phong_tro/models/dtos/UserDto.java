@@ -1,8 +1,6 @@
 package com.vxl.tim_phong_tro.models.dtos;
 
 
-import com.vxl.tim_phong_tro.models.entities.UserPost;
-import com.vxl.tim_phong_tro.models.entities.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

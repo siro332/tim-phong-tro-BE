@@ -2,7 +2,6 @@ package com.vxl.tim_phong_tro.services.impl;
 
 import com.vxl.tim_phong_tro.converters.DtoConverter;
 import com.vxl.tim_phong_tro.models.dtos.PostForm;
-import com.vxl.tim_phong_tro.models.dtos.UserPostDto;
 import com.vxl.tim_phong_tro.models.entities.*;
 import com.vxl.tim_phong_tro.repo.*;
 import com.vxl.tim_phong_tro.services.PostService;
@@ -10,12 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 

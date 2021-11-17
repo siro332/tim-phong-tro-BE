@@ -1,8 +1,5 @@
 package com.vxl.tim_phong_tro.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +23,4 @@ public class AppUser {
     @ManyToMany
     private Set<UserRole> userRoles;
 
-//    @OneToOne(mappedBy = "user")
-//    @PrimaryKeyJoinColumn
-//    private UserInfo userInfo;
 }

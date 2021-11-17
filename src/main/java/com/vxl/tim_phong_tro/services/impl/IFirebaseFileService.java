@@ -1,25 +1,17 @@
 package com.vxl.tim_phong_tro.services.impl;
 
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.*;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.cloud.StorageClient;
 import com.vxl.tim_phong_tro.services.FirebaseFileService;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -48,7 +40,7 @@ public class IFirebaseFileService implements FirebaseFileService {
     }
     @Override
     public String generateFileName(String originalFileName) {
-        return UUID.randomUUID().toString() + getExtension(originalFileName);
+        return UUID.randomUUID() + getExtension(originalFileName);
     }
     @Override
     public void delete(String name) throws IOException {

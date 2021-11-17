@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -69,7 +70,7 @@ public class UserController {
                 return ResponseEntity.ok().body("Saved to database");
             } else throw new Exception();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error saving to database: " + e.toString());
+            return ResponseEntity.badRequest().body("Error saving to database: " + e);
         }
     }
 

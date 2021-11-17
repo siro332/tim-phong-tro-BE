@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class UserPostSpecification implements Specification<UserPost> {
 
-        private SearchCriteria criteria;
+    private SearchCriteria criteria;
+
     public UserPostSpecification(final SearchCriteria criteria) {
         super();
         this.criteria = criteria;
@@ -33,33 +33,17 @@ public class UserPostSpecification implements Specification<UserPost> {
 
     @Override
     public Predicate toPredicate(Root<UserPost> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-        Expression<String> path = null;
-        if (criteria.getKey().contains(".")){
-           String[] paths = criteria.getKey().split("\\.");
-           switch (paths.length){
-               case 2:
-                   path = root.get(paths[0]).get(paths[1]);
-                   break;
-               case 3:
-                   path = root.get(paths[0]).get(paths[1]).get(paths[2]);
-                   break;
-               case 4:
-                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]);
-                   break;
-               case 5:
-                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]);
-                   break;
-               case 6:
-                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]).get(paths[4]);
-                   break;
-               case 7:
-                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]).get(paths[5]).get(paths[6]);
-                   break;
-               case 8:
-                   path = root.get(paths[0]).get(paths[1]).get(paths[2]).get(paths[3]).get(paths[4]).get(paths[5]).get(paths[6]).get(paths[7]);
-                   break;
-           }
-        } else{
+        Expression<String> path;
+        if (criteria.getKey().contains(".")) {
+            String[] paths = criteria.getKey().split("\\.");
+            Path<Object> temp = root.get(paths[0]);
+            if (paths.length > 2) {
+                for (int i = 1; i < paths.length - 1; i++) {
+                    temp = temp.get(paths[i]);
+                }
+            }
+            path = temp.get(paths[paths.length - 1]);
+        } else {
             path = root.get(criteria.getKey());
         }
         switch (criteria.getOperation()) {
@@ -78,7 +62,7 @@ public class UserPostSpecification implements Specification<UserPost> {
             case ENDS_WITH:
                 return builder.like(path, "%" + criteria.getValue());
             case CONTAINS:
-                return builder.like((Expression<String>) path, "%" + criteria.getValue() + "%");
+                return builder.like(path, "%" + criteria.getValue() + "%");
             default:
                 return null;
         }

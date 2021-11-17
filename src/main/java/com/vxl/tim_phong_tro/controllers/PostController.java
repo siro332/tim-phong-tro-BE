@@ -1,7 +1,6 @@
 package com.vxl.tim_phong_tro.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Joiner;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -9,13 +8,9 @@ import com.vxl.tim_phong_tro.converters.DtoConverter;
 import com.vxl.tim_phong_tro.models.dtos.PostDto;
 import com.vxl.tim_phong_tro.models.dtos.PostForm;
 import com.vxl.tim_phong_tro.models.dtos.PostPreviewDto;
-import com.vxl.tim_phong_tro.models.dtos.UserPostDto;
-import com.vxl.tim_phong_tro.models.entities.SavedPost;
 import com.vxl.tim_phong_tro.models.entities.UserInfo;
 import com.vxl.tim_phong_tro.models.entities.UserPost;
 import com.vxl.tim_phong_tro.models.entities.Ward;
-import com.vxl.tim_phong_tro.models.specifications.SearchCriteria;
-import com.vxl.tim_phong_tro.models.specifications.SearchOperation;
 import com.vxl.tim_phong_tro.models.specifications.UserPost.UserPostSpecificationsBuilder;
 import com.vxl.tim_phong_tro.services.AppUserService;
 import com.vxl.tim_phong_tro.services.FirebaseFileService;
@@ -33,8 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.vxl.tim_phong_tro.models.specifications.SearchOperation.OR_PREDICATE_FLAG;
 
@@ -60,17 +53,7 @@ public class PostController {
             } else {
                 pagePosts = postService.getAllPosts(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)));
             }
-            List<UserPost> posts = pagePosts.getContent();
-            List<PostPreviewDto> postDtos = new ArrayList<>();
-            for (UserPost post : posts
-            ) {
-                postDtos.add(dtoConverter.userPostEntityToPostPreviewDto(post));
-            }
-            Map<String, Object> response = new HashMap<>();
-            response.put("posts", postDtos);
-            response.put("currentPage", pagePosts.getNumber());
-            response.put("totalItems", pagePosts.getTotalElements());
-            response.put("totalPages", pagePosts.getTotalPages());
+            Map<String, Object> response = getResponse(pagePosts);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -109,17 +92,7 @@ public class PostController {
             } else {
                 pagePosts = postService.getPostContains(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)), spec);
             }
-            List<UserPost> posts = pagePosts.getContent();
-            List<PostPreviewDto> postDtos = new ArrayList<>();
-            for (UserPost post : posts
-            ) {
-                postDtos.add(dtoConverter.userPostEntityToPostPreviewDto(post));
-            }
-            Map<String, Object> response = new HashMap<>();
-            response.put("posts", postDtos);
-            response.put("currentPage", pagePosts.getNumber());
-            response.put("totalItems", pagePosts.getTotalElements());
-            response.put("totalPages", pagePosts.getTotalPages());
+            Map<String, Object> response = getResponse(pagePosts);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             log.info(e.toString());
@@ -133,17 +106,7 @@ public class PostController {
                                                             @RequestParam(defaultValue = "3") int size) {
         try {
             Page<UserPost> pagePosts = postService.getUserPosts(uid, PageRequest.of(page, size));
-            List<UserPost> posts = pagePosts.getContent();
-            List<PostPreviewDto> postDtos = new ArrayList<>();
-            for (UserPost post : posts
-            ) {
-                postDtos.add(dtoConverter.userPostEntityToPostPreviewDto(post));
-            }
-            Map<String, Object> response = new HashMap<>();
-            response.put("posts", postDtos);
-            response.put("currentPage", pagePosts.getNumber());
-            response.put("totalItems", pagePosts.getTotalElements());
-            response.put("totalPages", pagePosts.getTotalPages());
+            Map<String, Object> response = getResponse(pagePosts);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -164,17 +127,7 @@ public class PostController {
             } else {
                 pagePosts = postService.getUserSavedPost(uid, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortParam)));
             }
-            List<UserPost> posts = pagePosts.getContent();
-            List<PostPreviewDto> postDtos = new ArrayList<>();
-            for (UserPost post : posts
-            ) {
-                postDtos.add(dtoConverter.userPostEntityToPostPreviewDto(post));
-            }
-            Map<String, Object> response = new HashMap<>();
-            response.put("posts", postDtos);
-            response.put("currentPage", pagePosts.getNumber());
-            response.put("totalItems", pagePosts.getTotalElements());
-            response.put("totalPages", pagePosts.getTotalPages());
+            Map<String, Object> response = getResponse(pagePosts);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -251,6 +204,22 @@ public class PostController {
             return ResponseEntity.badRequest().body("Error");
         }
     }
+
+    private Map<String, Object> getResponse(Page<UserPost> pagePosts) {
+        List<UserPost> posts = pagePosts.getContent();
+        List<PostPreviewDto> postDtos = new ArrayList<>();
+        for (UserPost post : posts
+        ) {
+            postDtos.add(dtoConverter.userPostEntityToPostPreviewDto(post));
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("posts", postDtos);
+        response.put("currentPage", pagePosts.getNumber());
+        response.put("totalItems", pagePosts.getTotalElements());
+        response.put("totalPages", pagePosts.getTotalPages());
+        return response;
+    }
+
 }
 
 @Data

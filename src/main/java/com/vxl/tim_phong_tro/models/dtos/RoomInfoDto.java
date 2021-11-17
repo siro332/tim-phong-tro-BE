@@ -1,17 +1,10 @@
 package com.vxl.tim_phong_tro.models.dtos;
 
-import com.vxl.tim_phong_tro.models.entities.RoomType;
-import com.vxl.tim_phong_tro.models.entities.RoomUtil;
-import com.vxl.tim_phong_tro.models.entities.StreetAddress;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import java.util.Set;
 
 @Data

@@ -1,6 +1,5 @@
 package com.vxl.tim_phong_tro.models.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

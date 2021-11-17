@@ -1,7 +1,6 @@
 package com.vxl.tim_phong_tro.controllers;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.vxl.tim_phong_tro.models.dtos.AuthToken;
 import com.vxl.tim_phong_tro.services.AppUserService;
@@ -24,7 +23,7 @@ public class AuthController {
     private final AppUserService appUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody AuthToken request) throws FirebaseAuthException, ExecutionException, InterruptedException {
+    public ResponseEntity<?> registerUser(@RequestBody AuthToken request) throws ExecutionException, InterruptedException {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdTokenAsync(request.getToken()).get();
         if (appUserService.getUserByUid(decodedToken.getUid()) == null) {
             try {

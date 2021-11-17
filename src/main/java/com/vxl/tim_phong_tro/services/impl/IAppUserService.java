@@ -6,18 +6,13 @@ import com.google.firebase.auth.FirebaseToken;
 import com.vxl.tim_phong_tro.models.dtos.UserInfoDto;
 import com.vxl.tim_phong_tro.models.entities.AppUser;
 import com.vxl.tim_phong_tro.models.entities.UserInfo;
-import com.vxl.tim_phong_tro.models.entities.UserPost;
 import com.vxl.tim_phong_tro.models.entities.UserRole;
 import com.vxl.tim_phong_tro.repo.AppUserRepo;
 import com.vxl.tim_phong_tro.repo.UserInfoRepo;
-import com.vxl.tim_phong_tro.repo.UserPostRepo;
 import com.vxl.tim_phong_tro.repo.UserRoleRepo;
 import com.vxl.tim_phong_tro.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor

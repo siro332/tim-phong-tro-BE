@@ -7,8 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class UserPostSpecificationsBuilder {
     private final List<SearchCriteria> params;
